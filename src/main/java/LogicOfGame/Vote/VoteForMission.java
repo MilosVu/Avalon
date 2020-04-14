@@ -21,8 +21,7 @@ public class VoteForMission extends Vote {
             getVotes().toArray(votes1);
             String[] nameVotes1=new String[getVoteNames().size()];
             getVoteNames().toArray(nameVotes1);
-            Command command = new Command();
-//            Command command=new Command("nominatedVote",nameVotes1,votes1);
+            Command command = new Command("nominatedVote",nameVotes1,votes1);
 
             sendVotes(command);
             if(goOnMissionOrNot(votes1)){

@@ -30,7 +30,7 @@ public class ClientGameEndpoint {
     public void onMessage(Command command, Session session) throws IOException {
 
         switch (command.getCommand()) {
-            case "roll":
+            case "role":
                 System.out.println("Your roll is " + command.getValue());
 
                 System.out.println("Your against ");
@@ -58,14 +58,14 @@ public class ClientGameEndpoint {
 
                 }
                 System.out.println("Zelite li da nominovani podju na misiju? Ako zelite, napisite 1 a 0 u suprotnom");
-              vote(session,"vote");
+              vote(session,"voteForMission");
 
 
                 break;
 
             case "nominatedVote":
 
-//                    showNominated(command.getNameVotes(),command.getVotes());
+                  showNominated(command.getNominated(),command.getVotes());
 
 
                 break;
@@ -78,6 +78,7 @@ public class ClientGameEndpoint {
                         vote(session,"voteInMission");
 
                 }
+                missions++;
 
 
                 break;
@@ -90,7 +91,7 @@ public class ClientGameEndpoint {
                 break;
 
             case "gameOver":
-                    System.out.println("Victory go to "+command.getValue());
+                    System.out.println("Victory goes to "+command.getValue());
 
                     break;
 
@@ -111,42 +112,17 @@ public class ClientGameEndpoint {
 
     public void nominatedPlayersToMission( int numberOfPlayers,Session session) {
         System.out.println("Misija je"+missions);
-        switch (missions) {
-
-
-            case 1:
 
         messageClient(numberOfPlayers,session);
-                break;
 
 
-            case 2:
-
-                break;
-
-
-            case 3:
-
-                break;
-
-            case 4:
-
-
-                break;
-
-            case 5:
-
-                break;
-
-        }
-        missions++;
     }
 
     public void messageClient( int numberOfPlayers, Session session) {
         Command command = null;
 
         //Dvoje saljem
-        if ((missions==1 && numberOfPlayers>=5 && numberOfPlayers<=7) || (missions==3 && numberOfPlayers==1)) {
+        if ((missions==1 && numberOfPlayers>=5 && numberOfPlayers<=7) || (missions==3 && numberOfPlayers==5)) {
             System.out.println("Izaberite prvog igraca");
             String playerSend1 = scanner.nextLine();
             System.out.println("Izaberite drugog igraca");

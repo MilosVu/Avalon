@@ -54,7 +54,7 @@ public class GameEndpoint {
             GameThread.playersConnected = true;
         }
 
-//         session.getBasicRemote().sendText(playerId);
+
     }
 
 
@@ -110,7 +110,29 @@ public class GameEndpoint {
                 break;
 
             case"guessMerlin":
-            //Ovo da se dovrsi
+
+                //Trebam da proverim da li ovaj userName ima lika Merlina!
+                String username=command.getValue();
+                String []assassinAndMerlin=new String[2];
+                assassinAndMerlin[0]=session.getUserProperties().get("username").toString();
+                assassinAndMerlin[1]=findMerlin(roomId);
+                try {
+                    Session player=findPlayer(username,roomId);
+                    if(isPlayerMerlin(player)){
+
+                        Command command1=new Command("merlinGuessed",assassinAndMerlin,true);
+                        serverEndpointService.findRoom(roomId,rooms).voteForMission.sendVotes(command1);
+
+                    }
+                    else {
+                        Command command1 = new Command("merlinGuessed", assassinAndMerlin,false);
+                        serverEndpointService.findRoom(roomId, rooms).voteForMission.sendVotes(command1);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
 
                 break;
         }
@@ -177,5 +199,35 @@ public class GameEndpoint {
 
     }
 
+    public Session findPlayer(String username,String rommId) throws Exception {
+        Room room=serverEndpointService.findRoom(rommId,rooms);
+
+
+        for (Iterator<Session> it = room.getPlayers().iterator(); it.hasNext(); ) {
+                Session s=it.next();
+                if(s.getUserProperties().get("username").equals(username))
+                    return s;
+
+        }
+        throw new Exception("There is no player with username: "+username+" in room");
+    }
+    public boolean isPlayerMerlin(Session session){
+        return (session.getUserProperties().get("role").equals("Merlin"))?true:false;
+    }
+    public String findMerlin(String rommId){
+        Room room=serverEndpointService.findRoom(rommId,rooms);
+        for (Iterator<Session> it = room.getPlayers().iterator(); it.hasNext(); ) {
+            Session s=it.next();
+            if(s.getUserProperties().get("username").equals("Merlin"))
+                return s.getUserProperties().get("username").toString();
+
+        }
+        try {
+            throw new Exception("There is no Merlin here");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
 
